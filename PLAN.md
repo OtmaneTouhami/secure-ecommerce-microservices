@@ -204,11 +204,11 @@ pool-name: CommandServiceHikariPool  # Was ProductServiceHikariPool
 
 ### 1.4 Checklist
 
-- [ ] Fix config-service Spring Boot version (4.0.1 → 3.5.9)
-- [ ] Fix config-service Spring Cloud version (2025.1.0 → 2025.0.1)
-- [ ] Add MapStruct to product-service
-- [ ] Add MapStruct to command-service
-- [ ] Fix HikariPool name typo in command-service.yaml
+- [x] Fix config-service Spring Boot version (4.0.1 → 3.5.9)
+- [x] Fix config-service Spring Cloud version (2025.1.0 → 2025.0.1)
+- [x] Add MapStruct to product-service
+- [x] Add MapStruct to command-service
+- [x] Fix HikariPool name typo in command-service.yaml
 
 ---
 
@@ -1775,7 +1775,7 @@ export default api;
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Phase 1: Fix Versions | ⬜ Not Started | |
+| Phase 1: Fix Versions | ✅ Complete | |
 | Phase 2: Keycloak | ⬜ Not Started | |
 | Phase 3: Product Service | ⬜ Not Started | |
 | Phase 4: Order Service | ⬜ Not Started | |

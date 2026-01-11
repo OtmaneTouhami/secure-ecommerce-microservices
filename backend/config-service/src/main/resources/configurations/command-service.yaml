@@ -13,7 +13,7 @@ spring:
       idle-timeout: 300000
       max-lifetime: 1200000
       auto-commit: true
-      pool-name: ProductServiceHikariPool
+      pool-name: CommandServiceHikariPool
 
   jpa:
     hibernate:
