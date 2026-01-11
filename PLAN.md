@@ -1781,8 +1781,8 @@ export default api;
 | Phase 3: Product Service | ✅ Complete | |
 | Phase 4: Order Service | ✅ Complete | |
 | Phase 5: API Gateway | ✅ Complete | |
-| Phase 6: Inter-Service Comm | ⬜ Not Started | |
-| Phase 7: Logging | ⬜ Not Started | |
+| Phase 6: Inter-Service Comm | ✅ Complete | |
+| Phase 7: Logging | ✅ Complete | |
 | Phase 8: Docker | ⬜ Not Started | |
 | Phase 9: DevSecOps | ⬜ Not Started | |
 | Phase 10: Bonus | ⬜ Not Started | |
