@@ -1,0 +1,215 @@
+services:
+  # ==================== DATABASES ====================
+  postgres-products:
+    image: postgres:16-alpine
+    container_name: postgres-products
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: products_user
+      POSTGRES_PASSWORD: products_password
+    volumes:
+      - postgres-products-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U products_user -d products_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+  postgres-orders:
+    image: postgres:16-alpine
+    container_name: postgres-orders
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: orders_user
+      POSTGRES_PASSWORD: orders_password
+    volumes:
+      - postgres-orders-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orders_user -d orders_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+  # ==================== KEYCLOAK ====================
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+    command: start-dev --import-realm --health-enabled=true
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
+    volumes:
+      - ./backend/keycloak/ecommerce-realm.json:/opt/keycloak/data/import/ecommerce-realm.json:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\n\r\n' >&3 && timeout 1 cat <&3 | grep -q 'status.*UP'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - ecommerce-network
+
+  # ==================== INFRASTRUCTURE SERVICES ====================
+  discovery-service:
+    build:
+      context: ./backend/discovery-service
+      dockerfile: Dockerfile
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - ecommerce-network
+
+  config-service:
+    build:
+      context: ./backend/config-service
+      dockerfile: Dockerfile
+    container_name: config-service
+    ports:
+      - "9999:9999"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_HOST: discovery-service
+      EUREKA_PORT: 8761
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - ecommerce-network
+
+  # ==================== GATEWAY ====================
+  gateway-service:
+    build:
+      context: ./backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_HOST: discovery-service
+      EUREKA_PORT: 8761
+      KEYCLOAK_HOST: keycloak
+      KEYCLOAK_PORT: 8080
+      SPRING_CLOUD_CONFIG_URI: http://config-service:9999
+    depends_on:
+      config-service:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - ecommerce-network
+
+  # ==================== MICROSERVICES ====================
+  product-service:
+    build:
+      context: ./backend/product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_HOST: discovery-service
+      EUREKA_PORT: 8761
+      KEYCLOAK_HOST: keycloak
+      KEYCLOAK_PORT: 8080
+      SPRING_CLOUD_CONFIG_URI: http://config-service:9999
+      DB_HOST: postgres-products
+      DB_PORT: 5432
+      DB_NAME: products_db
+      DB_USERNAME: products_user
+      DB_PASSWORD: products_password
+    depends_on:
+      config-service:
+        condition: service_healthy
+      postgres-products:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - ecommerce-network
+
+  command-service:
+    build:
+      context: ./backend/command-service
+      dockerfile: Dockerfile
+    container_name: command-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_HOST: discovery-service
+      EUREKA_PORT: 8761
+      KEYCLOAK_HOST: keycloak
+      KEYCLOAK_PORT: 8080
+      SPRING_CLOUD_CONFIG_URI: http://config-service:9999
+      DB_HOST: postgres-orders
+      DB_PORT: 5432
+      DB_NAME: orders_db
+      DB_USERNAME: orders_user
+      DB_PASSWORD: orders_password
+    depends_on:
+      config-service:
+        condition: service_healthy
+      postgres-orders:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      product-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - ecommerce-network
+
+# ==================== NETWORKS ====================
+networks:
+  ecommerce-network:
+    driver: bridge
+
+# ==================== VOLUMES ====================
+volumes:
+  postgres-products-data:
+  postgres-orders-data:

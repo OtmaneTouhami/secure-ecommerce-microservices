@@ -15,8 +15,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka
+    registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
 
 # Actuator Configuration
 management:
@@ -26,7 +29,14 @@ management:
         include: health,info,metrics,loggers
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
 
 # Logging Configuration
 logging:
@@ -35,3 +45,4 @@ logging:
     ma.enset: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
