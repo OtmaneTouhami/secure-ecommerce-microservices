@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: config-service
+  cloud:
+    discovery:
+      enabled: true
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations
+  profiles:
+    active: native
+
+server:
+  port: 9999

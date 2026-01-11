@@ -1,0 +1,17 @@
+# Spring Cloud Gateway Configuration
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Product Service
+        url: /product-service/v3/api-docs
+      - name: Command Service
+        url: /command-service/v3/api-docs
+    urls-primary-name: Product Service
