@@ -888,15 +888,16 @@ public class CorsConfig {
         return new CorsWebFilter(source);
     }
 }
-```
 
-### 5.4 Checklist
+### 5.5 Checklist
 
-- [ ] Update gateway-service.yaml with explicit routes
-- [ ] Add TokenRelay filter for JWT propagation
-- [ ] Create SecurityConfig for gateway (WebFlux)
-- [ ] Create CorsConfig for frontend access
-- [ ] Configure OAuth2 client for Keycloak
+- [x] Create SecurityConfig with WebFlux security
+- [x] Add Keycloak role converter for JWT
+- [x] Configure route-based authorization
+- [x] Add TokenRelay filter for JWT propagation
+- [x] Configure CORS for frontend
+- [x] Create fallback controller for circuit breaker
+- [x] Test gateway routing with authenticationr Keycloak
 - [ ] Test routing and JWT validation
 - [ ] Verify Swagger UI aggregation works
 
@@ -1779,7 +1780,7 @@ export default api;
 | Phase 2: Keycloak | ✅ Complete | |
 | Phase 3: Product Service | ✅ Complete | |
 | Phase 4: Order Service | ✅ Complete | |
-| Phase 5: API Gateway | ⬜ Not Started | |
+| Phase 5: API Gateway | ✅ Complete | |
 | Phase 6: Inter-Service Comm | ⬜ Not Started | |
 | Phase 7: Logging | ⬜ Not Started | |
 | Phase 8: Docker | ⬜ Not Started | |

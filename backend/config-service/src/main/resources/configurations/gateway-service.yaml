@@ -6,7 +6,88 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+      default-filters:
+        - TokenRelay=
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      routes:
+        # Product Service Routes
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/api/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: productServiceCircuitBreaker
+                fallbackUri: forward:/fallback/product
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+                methods: GET
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 500ms
+                  factor: 2
+        
+        # Command (Order) Service Routes
+        - id: command-service
+          uri: lb://COMMAND-SERVICE
+          predicates:
+            - Path=/command-service/api/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: commandServiceCircuitBreaker
+                fallbackUri: forward:/fallback/order
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+                methods: GET
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 500ms
+                  factor: 2
+        
+        # Product Service API Docs
+        - id: product-service-docs
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/v3/api-docs/**
+          filters:
+            - StripPrefix=1
+        
+        # Command Service API Docs
+        - id: command-service-docs
+          uri: lb://COMMAND-SERVICE
+          predicates:
+            - Path=/command-service/v3/api-docs/**
+          filters:
+            - StripPrefix=1
 
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+    instances:
+      productServiceCircuitBreaker:
+        baseConfig: default
+      commandServiceCircuitBreaker:
+        baseConfig: default
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s
+
+# Springdoc Swagger UI Configuration
 springdoc:
   swagger-ui:
     urls:
