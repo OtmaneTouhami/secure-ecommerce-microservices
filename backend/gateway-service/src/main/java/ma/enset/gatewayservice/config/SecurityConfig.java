@@ -10,8 +10,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +27,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeExchange(exchanges -> exchanges
                         // Public endpoints
                         .pathMatchers("/actuator/**").permitAll()
@@ -36,8 +41,8 @@ public class SecurityConfig {
                         .pathMatchers("DELETE", "/product-service/api/products/**").hasRole("ADMIN")
                         
                         // Order Service routes
-                        .pathMatchers("POST", "/command-service/api/orders").hasRole("CLIENT")
-                        .pathMatchers("GET", "/command-service/api/orders/my-orders").hasRole("CLIENT")
+                        .pathMatchers("POST", "/command-service/api/orders").hasAnyRole("CLIENT", "ADMIN")
+                        .pathMatchers("GET", "/command-service/api/orders/my-orders").hasAnyRole("CLIENT", "ADMIN")
                         .pathMatchers("GET", "/command-service/api/orders").hasRole("ADMIN")
                         .pathMatchers("GET", "/command-service/api/orders/status/**").hasRole("ADMIN")
                         .pathMatchers("PUT", "/command-service/api/orders/*/status").hasRole("ADMIN")
@@ -50,6 +55,26 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://localhost",
+            "http://localhost:80"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

@@ -1,0 +1,18 @@
+.product-search {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+}
+
+.search-input {
+    padding-left: 40px !important;
+    width: 100%;
+}

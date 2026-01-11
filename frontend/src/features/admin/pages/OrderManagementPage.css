@@ -1,0 +1,73 @@
+.order-management-page .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.order-management-page h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.status-filter,
+.status-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    color: hsl(var(--foreground));
+    font-size: 0.875rem;
+}
+
+.status-select {
+    min-width: 120px;
+}
+
+.status-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.orders-table th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+}
+
+.order-id {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+}
+
+.no-orders {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: hsl(var(--muted-foreground));
+}

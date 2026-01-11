@@ -1,0 +1,109 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+    padding: var(--spacing-lg);
+    overflow: hidden;
+}
+
+.modal {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 500px;
+    animation: slideIn 0.2s ease;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.close-btn:hover {
+    background: hsl(var(--secondary));
+    color: hsl(var(--foreground));
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.input-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+}
+
+.textarea {
+    width: 100%;
+    padding: var(--spacing-sm) 12px;
+    font-size: 0.875rem;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--input));
+    border-radius: var(--radius);
+    color: hsl(var(--foreground));
+    resize: none;
+    height: 80px;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+}

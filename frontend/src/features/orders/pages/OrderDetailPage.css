@@ -1,0 +1,129 @@
+.order-detail-page {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) 0;
+    background: transparent;
+    border: none;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875rem;
+    cursor: pointer;
+    margin-bottom: var(--spacing-lg);
+}
+
+.back-button:hover {
+    color: hsl(var(--foreground));
+}
+
+.order-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+}
+
+.order-detail-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.order-date {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    margin-top: var(--spacing-xs);
+}
+
+.order-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.order-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: hsl(var(--secondary));
+    border-radius: var(--radius);
+    color: hsl(var(--muted-foreground));
+}
+
+.order-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.order-item-name {
+    font-weight: 500;
+}
+
+.order-item-qty {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.order-item-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.unit-price {
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.subtotal {
+    font-weight: 600;
+}
+
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid hsl(var(--border));
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.order-detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: var(--spacing-md);
+}

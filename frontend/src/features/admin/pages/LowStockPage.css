@@ -1,0 +1,80 @@
+.low-stock-page .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.low-stock-page h1 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: hsl(var(--warning));
+}
+
+.threshold-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.threshold-control label {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.threshold-input {
+    width: 80px;
+    padding: var(--spacing-sm);
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    color: hsl(var(--foreground));
+    font-size: 0.875rem;
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stock-table th,
+.stock-table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.stock-table th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+}
+
+.product-name {
+    font-weight: 500;
+}
+
+.product-desc {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: hsl(var(--muted-foreground));
+}
+
+.stock-qty {
+    font-weight: 600;
+    color: hsl(var(--warning));
+}
+
+.no-alerts {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: hsl(var(--muted-foreground));
+}

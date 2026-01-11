@@ -1,0 +1,110 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: hsl(var(--background));
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: hsl(var(--foreground));
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.theme-toggle,
+.cart-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    color: hsl(var(--foreground));
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.theme-toggle:hover,
+.cart-btn:hover {
+    background: hsl(var(--secondary));
+}
+
+.cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    font-size: 0.625rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    padding: 0 4px;
+}
+
+.login-btn {
+    height: 40px;
+    padding: 0 16px;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .header-nav {
+        display: none;
+    }
+}

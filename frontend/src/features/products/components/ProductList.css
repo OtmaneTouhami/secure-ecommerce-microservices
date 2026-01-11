@@ -1,0 +1,19 @@
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.product-list-loading,
+.product-list-error,
+.product-list-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: hsl(var(--muted-foreground));
+}
+
+.product-list-error {
+    color: hsl(var(--destructive));
+}

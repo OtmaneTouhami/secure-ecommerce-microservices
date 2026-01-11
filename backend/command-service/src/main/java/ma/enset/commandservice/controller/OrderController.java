@@ -34,7 +34,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     @Operation(summary = "Create a new order", description = "Create a new order with products. Only accessible by CLIENT role.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Order created successfully"),
@@ -54,7 +54,7 @@ public class OrderController {
     }
 
     @GetMapping("/my-orders")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
     @Operation(summary = "Get my orders", description = "Retrieve all orders for the current user. Only accessible by CLIENT role.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Orders retrieved successfully"),

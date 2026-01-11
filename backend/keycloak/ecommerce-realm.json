@@ -60,19 +60,21 @@
       "redirectUris": [
         "http://localhost:5173/*",
         "http://localhost:3000/*",
+        "http://localhost/*",
         "http://localhost:80/*",
         "http://frontend:80/*"
       ],
       "webOrigins": [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://localhost",
         "http://localhost:80",
         "http://frontend:80",
         "+"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:3000/*##http://localhost:80/*",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:3000/*##http://localhost/*##http://localhost:80/*",
         "access.token.lifespan": "300",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.session.required": "true",

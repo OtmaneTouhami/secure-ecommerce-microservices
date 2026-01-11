@@ -2,6 +2,27 @@
 spring:
   cloud:
     gateway:
+      # CORS Configuration
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+              - "http://localhost"
+              - "http://localhost:80"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            exposedHeaders:
+              - "*"
+            allowCredentials: true
+            maxAge: 3600
       discovery:
         locator:
           enabled: true
