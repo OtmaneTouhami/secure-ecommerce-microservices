@@ -751,22 +751,22 @@ sequenceDiagram
 
 ### 4.7 Checklist
 
-- [ ] Create Order and OrderItem entities
-- [ ] Create OrderStatus enum (PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED)
-- [ ] Create DTOs (OrderRequestDTO, OrderResponseDTO, OrderItemDTO, ProductDTO)
-- [ ] Create OrderMapper interface (MapStruct)
-- [ ] Create OrderRepository
-- [ ] Create ProductServiceClient (Feign)
-- [ ] Create FeignConfig for JWT propagation
-- [ ] Create OrderService with business logic:
-  - [ ] Validate product availability
-  - [ ] Calculate total amount
-  - [ ] Create order with items
-  - [ ] Reduce stock via Product Service
-- [ ] Create OrderController with role-based endpoints
-- [ ] Create SecurityConfig with JWT authentication
-- [ ] Create custom exceptions
-- [ ] Test inter-service communication
+- [x] Create Order and OrderItem entities
+- [x] Create OrderStatus enum (PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED)
+- [x] Create DTOs (OrderRequestDTO, OrderResponseDTO, OrderItemDTO, ProductDTO)
+- [x] Create OrderMapper interface (MapStruct)
+- [x] Create OrderRepository
+- [x] Create ProductServiceClient (Feign)
+- [x] Create FeignConfig for JWT propagation
+- [x] Create OrderService with business logic:
+  - [x] Validate product availability
+  - [x] Calculate total amount
+  - [x] Create order with items
+  - [x] Reduce stock via Product Service
+- [x] Create OrderController with role-based endpoints
+- [x] Create SecurityConfig with JWT authentication
+- [x] Create custom exceptions
+- [x] Test inter-service communication
 
 ---
 
@@ -1778,7 +1778,7 @@ export default api;
 | Phase 1: Fix Versions | ✅ Complete | |
 | Phase 2: Keycloak | ✅ Complete | |
 | Phase 3: Product Service | ✅ Complete | |
-| Phase 4: Order Service | ⬜ Not Started | |
+| Phase 4: Order Service | ✅ Complete | |
 | Phase 5: API Gateway | ⬜ Not Started | |
 | Phase 6: Inter-Service Comm | ⬜ Not Started | |
 | Phase 7: Logging | ⬜ Not Started | |
