@@ -156,6 +156,21 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
+        OrderStatus previousStatus = order.getStatus();
+
+        // If changing to CANCELLED from PENDING/CONFIRMED, restore stock
+        if (status == OrderStatus.CANCELLED && 
+            (previousStatus == OrderStatus.PENDING || previousStatus == OrderStatus.CONFIRMED)) {
+            for (OrderItem item : order.getItems()) {
+                try {
+                    productServiceClient.restoreStock(item.getProductId(), item.getQuantity());
+                    log.info("Stock restored for product: {}, quantity: {}", item.getProductId(), item.getQuantity());
+                } catch (Exception e) {
+                    log.error("Failed to restore stock for product {}: {}", item.getProductId(), e.getMessage());
+                }
+            }
+        }
+
         order.setStatus(status);
         Order updatedOrder = orderRepository.save(order);
         log.info("Order {} status updated to {}", orderId, status);

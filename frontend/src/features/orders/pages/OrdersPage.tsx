@@ -5,7 +5,7 @@ import { ShoppingBag } from 'lucide-react';
 import './OrdersPage.css';
 
 const OrdersPage = () => {
-    const { orders, loading, error } = useOrders();
+    const { orders, loading, error, refetch } = useOrders();
 
     if (loading) {
         return <Spinner fullScreen />;
@@ -31,7 +31,11 @@ const OrdersPage = () => {
 
             <div className="orders-list">
                 {orders.map((order) => (
-                    <OrderCard key={order.id} order={order} />
+                    <OrderCard
+                        key={order.id}
+                        order={order}
+                        onOrderCancelled={refetch}
+                    />
                 ))}
             </div>
         </div>

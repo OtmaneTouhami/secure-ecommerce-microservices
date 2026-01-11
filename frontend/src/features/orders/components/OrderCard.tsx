@@ -1,16 +1,39 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { X } from 'lucide-react';
 import type { Order } from '../types/order.types';
 import { Card, CardContent } from '@/components/common/Card';
 import OrderStatusBadge from './OrderStatusBadge';
+import Button from '@/components/common/Button';
+import { orderService } from '../services/orderService';
 import { formatDate, formatCurrency } from '@/utils/formatters';
 import './OrderCard.css';
 
 interface OrderCardProps {
     order: Order;
+    onOrderCancelled?: () => void;
 }
 
-const OrderCard = ({ order }: OrderCardProps) => {
+const OrderCard = ({ order, onOrderCancelled }: OrderCardProps) => {
     const navigate = useNavigate();
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    const canCancel = order.status === 'PENDING' || order.status === 'CONFIRMED';
+
+    const handleCancel = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!window.confirm('Are you sure you want to cancel this order?')) return;
+
+        setIsCancelling(true);
+        try {
+            await orderService.cancel(order.id);
+            onOrderCancelled?.();
+        } catch {
+            alert('Failed to cancel order. Please try again.');
+        } finally {
+            setIsCancelling(false);
+        }
+    };
 
     return (
         <Card
@@ -38,9 +61,23 @@ const OrderCard = ({ order }: OrderCardProps) => {
                     </div>
                 </div>
 
-                <div className="order-card-total">
-                    <span className="label">Total</span>
-                    <span className="value">{formatCurrency(order.totalAmount)}</span>
+                <div className="order-card-footer">
+                    <div className="order-card-total">
+                        <span className="label">Total</span>
+                        <span className="value">{formatCurrency(order.totalAmount)}</span>
+                    </div>
+                    {canCancel && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancel}
+                            isLoading={isCancelling}
+                            className="cancel-order-btn"
+                        >
+                            <X size={14} />
+                            Cancel
+                        </Button>
+                    )}
                 </div>
             </CardContent>
         </Card>
