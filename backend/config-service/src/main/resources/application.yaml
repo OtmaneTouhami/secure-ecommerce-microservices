@@ -2,8 +2,6 @@ spring:
   application:
     name: config-service
   cloud:
-    discovery:
-      enabled: true
     config:
       server:
         native:
@@ -13,3 +11,42 @@ spring:
 
 server:
   port: 9999
+
+# Eureka Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+# Actuator for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+---
+# Docker profile configuration
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations
+  profiles:
+    active: native
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka

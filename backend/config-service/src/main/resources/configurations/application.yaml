@@ -7,7 +7,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8080}/realms/ecommerce-realm
+          # issuer-uri uses KEYCLOAK_ISSUER_HOST (defaults to localhost for external access)
+          issuer-uri: http://${KEYCLOAK_ISSUER_HOST:localhost}:${KEYCLOAK_PORT:8080}/realms/ecommerce-realm
+          # jwk-set-uri uses KEYCLOAK_HOST (can be internal Docker hostname)
           jwk-set-uri: http://${KEYCLOAK_HOST:localhost}:${KEYCLOAK_PORT:8080}/realms/ecommerce-realm/protocol/openid-connect/certs
 
 # Eureka Configuration
