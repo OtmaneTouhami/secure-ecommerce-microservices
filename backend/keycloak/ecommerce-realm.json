@@ -51,13 +51,45 @@
       "enabled": true,
       "publicClient": true,
       "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
       "protocol": "openid-connect",
+      "rootUrl": "http://localhost:5173",
+      "baseUrl": "/",
       "redirectUris": [
-        "*"
+        "http://localhost:5173/*",
+        "http://localhost:3000/*",
+        "http://localhost:80/*",
+        "http://frontend:80/*"
       ],
       "webOrigins": [
-        "*"
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:80",
+        "http://frontend:80",
+        "+"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:3000/*##http://localhost:80/*",
+        "access.token.lifespan": "300",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
       ]
     }
   ],
