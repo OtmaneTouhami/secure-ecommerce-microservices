@@ -33,9 +33,43 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    /**
+     * Extract user ID from JWT token with fallback to preferred_username
+     */
+    private String extractUserId(Jwt jwt) {
+        String userId = jwt.getSubject();
+        if (userId == null) {
+            userId = jwt.getClaimAsString("sub");
+        }
+        // Fallback to preferred_username if sub is not available
+        if (userId == null) {
+            userId = jwt.getClaimAsString("preferred_username");
+            log.warn("Using preferred_username as userId because sub claim is missing");
+        }
+        if (userId == null) {
+            log.error("Could not extract user ID from JWT. Claims: {}", jwt.getClaims());
+            throw new IllegalStateException("User ID not found in token");
+        }
+        return userId;
+    }
+
+    private String extractUsername(Jwt jwt) {
+        return jwt.getClaimAsString("preferred_username");
+    }
+
+    private boolean hasRole(Jwt jwt, String role) {
+        var realmAccess = jwt.getClaimAsMap("realm_access");
+        if (realmAccess != null) {
+            @SuppressWarnings("unchecked")
+            List<String> roles = (List<String>) realmAccess.get("roles");
+            return roles != null && roles.contains(role);
+        }
+        return false;
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
-    @Operation(summary = "Create a new order", description = "Create a new order with products. Only accessible by CLIENT role.")
+    @Operation(summary = "Create a new order", description = "Create a new order with products.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Order created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input or insufficient stock"),
@@ -45,9 +79,9 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> createOrder(
             @Valid @RequestBody OrderRequestDTO request,
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        String username = jwt.getClaimAsString("preferred_username");
-        log.info("User {} creating new order", username);
+        String userId = extractUserId(jwt);
+        String username = extractUsername(jwt);
+        log.info("User {} (id: {}) creating new order", username, userId);
 
         OrderResponseDTO order = orderService.createOrder(request, userId, username);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
@@ -55,15 +89,15 @@ public class OrderController {
 
     @GetMapping("/my-orders")
     @PreAuthorize("hasAnyRole('CLIENT', 'ADMIN')")
-    @Operation(summary = "Get my orders", description = "Retrieve all orders for the current user. Only accessible by CLIENT role.")
+    @Operation(summary = "Get my orders", description = "Retrieve all orders for the current user.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Orders retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public ResponseEntity<List<OrderResponseDTO>> getMyOrders(
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
-        log.info("User {} fetching their orders", jwt.getClaimAsString("preferred_username"));
+        String userId = extractUserId(jwt);
+        log.info("User {} fetching their orders", extractUsername(jwt));
 
         List<OrderResponseDTO> orders = orderService.getMyOrders(userId);
         return ResponseEntity.ok(orders);
@@ -79,9 +113,9 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> getOrderById(
             @PathVariable @Parameter(description = "Order ID") String id,
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
+        String userId = extractUserId(jwt);
         boolean isAdmin = hasRole(jwt, "ADMIN");
-        log.info("User {} fetching order: {}", jwt.getClaimAsString("preferred_username"), id);
+        log.info("User {} fetching order: {}", extractUsername(jwt), id);
 
         OrderResponseDTO order = orderService.getOrderById(id, userId, isAdmin);
         return ResponseEntity.ok(order);
@@ -97,7 +131,7 @@ public class OrderController {
     })
     public ResponseEntity<List<OrderResponseDTO>> getAllOrders(
             @AuthenticationPrincipal Jwt jwt) {
-        log.info("Admin {} fetching all orders", jwt.getClaimAsString("preferred_username"));
+        log.info("Admin {} fetching all orders", extractUsername(jwt));
         List<OrderResponseDTO> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
@@ -114,7 +148,7 @@ public class OrderController {
             @PathVariable @Parameter(description = "Order ID") String id,
             @RequestParam @Parameter(description = "New order status") OrderStatus status,
             @AuthenticationPrincipal Jwt jwt) {
-        log.info("Admin {} updating order {} status to {}", jwt.getClaimAsString("preferred_username"), id, status);
+        log.info("Admin {} updating order {} status to {}", extractUsername(jwt), id, status);
         OrderResponseDTO order = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(order);
     }
@@ -130,9 +164,9 @@ public class OrderController {
     public ResponseEntity<Void> cancelOrder(
             @PathVariable @Parameter(description = "Order ID") String id,
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
+        String userId = extractUserId(jwt);
         boolean isAdmin = hasRole(jwt, "ADMIN");
-        log.info("User {} cancelling order: {}", jwt.getClaimAsString("preferred_username"), id);
+        log.info("User {} cancelling order: {}", extractUsername(jwt), id);
 
         orderService.cancelOrder(id, userId, isAdmin);
         return ResponseEntity.noContent().build();
@@ -149,7 +183,7 @@ public class OrderController {
     public ResponseEntity<List<OrderResponseDTO>> getOrdersByStatus(
             @PathVariable @Parameter(description = "Order status to filter by") OrderStatus status,
             @AuthenticationPrincipal Jwt jwt) {
-        log.info("Admin {} fetching orders with status: {}", jwt.getClaimAsString("preferred_username"), status);
+        log.info("Admin {} fetching orders with status: {}", extractUsername(jwt), status);
         List<OrderResponseDTO> orders = orderService.getOrdersByStatus(status);
         return ResponseEntity.ok(orders);
     }
@@ -164,21 +198,11 @@ public class OrderController {
     public ResponseEntity<List<OrderItemResponseDTO>> getOrderItems(
             @PathVariable @Parameter(description = "Order ID") String id,
             @AuthenticationPrincipal Jwt jwt) {
-        String userId = jwt.getSubject();
+        String userId = extractUserId(jwt);
         boolean isAdmin = hasRole(jwt, "ADMIN");
-        log.info("User {} fetching items for order: {}", jwt.getClaimAsString("preferred_username"), id);
+        log.info("User {} fetching items for order: {}", extractUsername(jwt), id);
 
         List<OrderItemResponseDTO> items = orderService.getOrderItems(id, userId, isAdmin);
         return ResponseEntity.ok(items);
-    }
-
-    private boolean hasRole(Jwt jwt, String role) {
-        var realmAccess = jwt.getClaimAsMap("realm_access");
-        if (realmAccess != null) {
-            @SuppressWarnings("unchecked")
-            List<String> roles = (List<String>) realmAccess.get("roles");
-            return roles != null && roles.contains(role);
-        }
-        return false;
     }
 }

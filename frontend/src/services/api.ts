@@ -42,11 +42,6 @@ api.interceptors.response.use(
             }
         }
 
-        // Handle 403 - Forbidden
-        if (error.response?.status === 403) {
-            window.location.href = '/forbidden';
-        }
-
         return Promise.reject(error);
     }
 );

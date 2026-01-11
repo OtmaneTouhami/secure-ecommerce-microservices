@@ -170,5 +170,15 @@ public class ProductController {
         productService.reduceStock(id, quantity);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{id}/restore-stock")
+    @Operation(summary = "Restore product stock", description = "Restore product stock after order cancellation. Used for inter-service communication.")
+    public ResponseEntity<Void> restoreStock(
+            @PathVariable @Parameter(description = "Product ID") String id,
+            @RequestParam @Parameter(description = "Quantity to restore") Integer quantity) {
+        log.info("Restoring stock for product: {}, quantity: {}", id, quantity);
+        productService.restoreStock(id, quantity);
+        return ResponseEntity.ok().build();
+    }
 }
 

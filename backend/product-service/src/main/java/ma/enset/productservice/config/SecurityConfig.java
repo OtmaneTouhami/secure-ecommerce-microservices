@@ -37,6 +37,10 @@ public class SecurityConfig {
                         // Product endpoints - Read access for both ADMIN and CLIENT
                         .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("ADMIN", "CLIENT")
                         
+                        // Stock operations - allow both roles (for order processing)
+                        .requestMatchers(HttpMethod.PUT, "/api/products/*/reduce-stock").hasAnyRole("ADMIN", "CLIENT")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/*/restore-stock").hasAnyRole("ADMIN", "CLIENT")
+                        
                         // Product endpoints - Write access only for ADMIN
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")

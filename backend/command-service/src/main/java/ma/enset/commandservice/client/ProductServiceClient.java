@@ -19,4 +19,7 @@ public interface ProductServiceClient {
 
     @PutMapping("/api/products/{id}/reduce-stock")
     void reduceStock(@PathVariable("id") String id, @RequestParam("quantity") Integer quantity);
+
+    @PutMapping("/api/products/{id}/restore-stock")
+    void restoreStock(@PathVariable("id") String id, @RequestParam("quantity") Integer quantity);
 }

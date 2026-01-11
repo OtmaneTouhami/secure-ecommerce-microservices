@@ -179,6 +179,17 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalStateException("Cannot cancel order with status: " + order.getStatus());
         }
 
+        // Restore stock for each item in the order
+        for (OrderItem item : order.getItems()) {
+            try {
+                productServiceClient.restoreStock(item.getProductId(), item.getQuantity());
+                log.info("Stock restored for product: {}, quantity: {}", item.getProductId(), item.getQuantity());
+            } catch (Exception e) {
+                log.error("Failed to restore stock for product {}: {}", item.getProductId(), e.getMessage());
+                // Continue with cancellation even if stock restoration fails
+            }
+        }
+
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
         log.info("Order {} cancelled", orderId);

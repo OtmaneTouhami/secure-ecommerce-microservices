@@ -98,6 +98,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void restoreStock(String productId, Integer quantity) {
+        log.info("Restoring stock for product: {}, quantity: {}", productId, quantity);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+        
+        product.setStockQuantity(product.getStockQuantity() + quantity);
+        productRepository.save(product);
+        log.info("Stock restored for product: {}. New stock: {}", productId, product.getStockQuantity());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDTO> searchProducts(String name) {
         log.debug("Searching products by name: {}", name);

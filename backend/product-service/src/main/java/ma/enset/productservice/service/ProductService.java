@@ -21,6 +21,8 @@ public interface ProductService {
 
     void reduceStock(String productId, Integer quantity);
 
+    void restoreStock(String productId, Integer quantity);
+
     List<ProductResponseDTO> searchProducts(String name);
 
     List<ProductResponseDTO> getInStockProducts();

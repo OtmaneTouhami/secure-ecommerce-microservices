@@ -35,8 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         
                         // Order endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/orders").hasRole("CLIENT")
-                        .requestMatchers(HttpMethod.GET, "/api/orders/my-orders").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/orders/my-orders").hasAnyRole("CLIENT", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/orders/*/status").hasRole("ADMIN")
                         
